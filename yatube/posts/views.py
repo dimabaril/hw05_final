@@ -7,7 +7,7 @@ from .models import Follow, Group, Post, User
 from .utils import paginate
 
 
-@cache_page(20, key_prefix='index_page')
+@cache_page(1, key_prefix='index_page')
 def index(request):
     """Отображаем главную страничку со всеми постами."""
     posts_list = Post.objects.select_related('group', 'author')
@@ -99,9 +99,17 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
+    user = request.user
     posts_list = Post.objects.filter(
-        author__following__user=request.user
+        author__following__user=user
     ).select_related('group', 'author')
+
+#    user = request.user
+#    follow_objs = user.follower
+#    author_ids = follow_objs.values_list('author_id', flat=True)
+#    posts_list = Post.objects.filter(
+#        author_id__in=author_ids).select_related('group', 'author')
+
     page_obj = paginate(posts_list, request)
     context = {'page_obj': page_obj}
     return render(request, 'posts/follow.html', context)

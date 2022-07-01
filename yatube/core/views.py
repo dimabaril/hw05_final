@@ -8,7 +8,7 @@ def page_not_found(request, exception):
     return render(request, 'core/404.html', {'path': request.path}, status=404)
 
 
-def server_trouble(request, exception):
+def server_trouble(request, *args, **kwargs):
     # Переменная exception содержит отладочную информацию;
     # выводить её в шаблон пользовательской страницы 500 мы не станем
     return render(request, 'core/500.html', {'path': request.path}, status=500)

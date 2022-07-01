@@ -4,7 +4,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-
 # хотя теория говорит что 403 здесь не надо
 # но пайтест ругается
 handler403 = 'core.views.csrf_failure'
