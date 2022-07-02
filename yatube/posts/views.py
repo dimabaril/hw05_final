@@ -87,6 +87,7 @@ def post_edit(request, post_id):
 
 @login_required
 def add_comment(request, post_id):
+    """Добавляем коммент."""
     post = get_object_or_404(Post.objects.all(), id=post_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():
@@ -99,17 +100,11 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
+    """Отображаем страничку с постами по подписке."""
     user = request.user
     posts_list = Post.objects.filter(
         author__following__user=user
     ).select_related('group', 'author')
-
-#    user = request.user
-#    follow_objs = user.follower
-#    author_ids = follow_objs.values_list('author_id', flat=True)
-#    posts_list = Post.objects.filter(
-#        author_id__in=author_ids).select_related('group', 'author')
-
     page_obj = paginate(posts_list, request)
     context = {'page_obj': page_obj}
     return render(request, 'posts/follow.html', context)
@@ -117,6 +112,7 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
+    """Подписываемся."""
     author = get_object_or_404(User, username=username)
     if author != request.user:
         Follow.objects.get_or_create(author=author, user=request.user)
@@ -125,6 +121,7 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
+    """Отписываемся."""
     author = get_object_or_404(User, username=username)
     Follow.objects.filter(author=author, user=request.user).delete()
     return redirect('posts:profile', username)

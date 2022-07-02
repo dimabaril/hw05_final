@@ -131,8 +131,8 @@ class AllTests(TestCase):
                 post = response.context['page_obj'][-1]
                 checking_post_content(
                     self, post,
-                    self.post.text, self.user_author.username, self.post.id,
-                    self.post.image
+                    self.post.text, self.user_author.username,
+                    self.post.group.id, self.post.image
                 )
 
     def test_post_detail_page_show_correct_context(self):
@@ -143,8 +143,8 @@ class AllTests(TestCase):
         post_comments = response.context['comments']
         checking_post_content(
             self, post,
-            self.post.text, self.user_author.username, self.post.id,
-            self.post.image
+            self.post.text, self.user_author.username,
+            self.post.group.id, self.post.image
         )
         self.assertEqual(list(post_comments),
                          list(Comment.objects.filter(post_id=self.post.id)))
@@ -240,6 +240,8 @@ class AllTests(TestCase):
 
     def test_following(self):
         """Проверяем подписку"""
+        self.assertFalse(Follow.objects.filter(
+            user=self.user_follower, author=self.user_author).exists())
         self.authorized_follower.get(get_reverse_url(self.follow))
         self.assertTrue(Follow.objects.filter(
             user=self.user_follower, author=self.user_author).exists())
@@ -249,7 +251,7 @@ class AllTests(TestCase):
 
     def test_follow(self):
         """У фоловера пост есть, у не фоловера нет"""
-        self.authorized_follower.get(get_reverse_url(self.follow))
+        Follow.objects.create(user=self.user_follower, author=self.user_author)
         response = self.authorized_follower.get(
             get_reverse_url(self.follow_index))
         follower_posts_count_befor_post = len(response.context['page_obj'])
