@@ -245,6 +245,13 @@ class AllTests(TestCase):
         self.authorized_follower.get(get_reverse_url(self.follow))
         self.assertTrue(Follow.objects.filter(
             user=self.user_follower, author=self.user_author).exists())
+
+    def test_unfollowing(self):
+        """Проверяем отписку"""
+        Follow.objects.create(
+            user=self.user_follower, author=self.user_author)
+        self.assertTrue(Follow.objects.filter(
+            user=self.user_follower, author=self.user_author).exists())
         self.authorized_follower.get(get_reverse_url(self.unfollow))
         self.assertFalse(Follow.objects.filter(
             user=self.user_follower, author=self.user_author).exists())

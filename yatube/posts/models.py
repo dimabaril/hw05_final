@@ -22,7 +22,8 @@ class Post(models.Model):
         help_text="Текст нового поста",
     )
     pub_date = models.DateTimeField(
-        auto_now_add=True, verbose_name="Дата публикации"
+        auto_now_add=True,
+        verbose_name="Дата публикации"
     )
     author = models.ForeignKey(
         User,
@@ -71,7 +72,8 @@ class Comment(models.Model):
         help_text="Текст комментария",
     )
     created = models.DateTimeField(
-        auto_now_add=True, verbose_name="Дата и время публикации"
+        auto_now_add=True,
+        verbose_name="Дата и время публикации"
     )
 
     def __str__(self):

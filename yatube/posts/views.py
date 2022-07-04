@@ -61,12 +61,12 @@ def post_detail(request, post_id):
 def post_create(request):
     """Создаём пост."""
     form = PostForm(request.POST or None, files=request.FILES or None)
-    if not form.is_valid():
-        return render(request, 'posts/post_create.html', {'form': form})
-    post = form.save(commit=False)
-    post.author = request.user
-    post.save()
-    return redirect('posts:profile', username=post.author)
+    if request.method == "POST" and form.is_valid():
+        post = form.save(commit=False)
+        post.author = request.user
+        post.save()
+        return redirect('posts:profile', username=post.author)
+    return render(request, 'posts/post_create.html', {'form': form})
 
 
 @login_required
@@ -90,7 +90,7 @@ def add_comment(request, post_id):
     """Добавляем коммент."""
     post = get_object_or_404(Post.objects.all(), id=post_id)
     form = CommentForm(request.POST or None)
-    if form.is_valid():
+    if request.method == "POST" and form.is_valid():
         comment = form.save(commit=False)
         comment.author = request.user
         comment.post = post
